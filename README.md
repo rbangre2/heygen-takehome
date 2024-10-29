@@ -1,6 +1,6 @@
 # Status Client Library and Server
 
-This project includes a server and client library for polling the status of a simulated video translation job. The server provides a `/status` endpoint, which can return `pending`, `completed`, or `error` based on a configurable delay. The client library, `StatusClient`, allows efficient polling of the server's status with features like adaptive polling intervals, retry limits, and webhook notifications.
+This project includes a server and client library for polling the status of a simulated video translation job. The server provides a GET `/status` endpoint, which can return `pending`, `completed`, or `error` based on a configurable delay. The client library, `StatusClient`, allows efficient polling of the server's status with features like adaptive polling intervals, retry limits, and webhook notifications.
 
 ## Table of Contents
 
