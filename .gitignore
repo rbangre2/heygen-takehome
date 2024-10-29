@@ -1,2 +1,4 @@
 /packages/server/dist
 /packages/server/node_modules
+/packages/client/dist
+/packages/client/node_modules
