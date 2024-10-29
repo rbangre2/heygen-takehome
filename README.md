@@ -106,7 +106,16 @@ The StatusClient implements an intelligent adaptive polling strategy that's more
 - `registerWebhook()`: Register a webhook URL with the server
 - `unregisterWebhook()`: Unregister a webhook URL from the server
 
-### Webhook Support
+## Webhook Support
+
+### Why Use Webhooks Over Polling?
+
+1. **Reduced Server Load**: Polling requires regular requests to the server, which can result in a high load, especially if the client is checking frequently. Webhooks, however, only send a request when there’s an actual status update, greatly reducing the number of unnecessary server calls.
+
+2. **Lower Latency in Receiving Updates**: With polling, the client may miss an immediate update depending on the interval set. A webhook allows for near-instantaneous updates since the server pushes notifications as soon as the status changes, ensuring real-time updates.
+  
+3. **Fallback Mechanism**: By using webhooks with polling as a fallback, clients benefit from both proactive notifications and reliability. Should the webhook experience issues, the client can still retrieve updates through polling, ensuring robust performance.
+
 
 The StatusClient supports webhook notifications in addition to polling. When configured with a webhook URL, the client will:
 - Automatically register the webhook URL when monitoring starts
