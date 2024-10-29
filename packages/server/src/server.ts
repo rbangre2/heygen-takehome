@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import cors from "cors";
 import router from "./routes";
 import { config } from "./config";
 
@@ -6,6 +7,7 @@ const app: Application = express();
 const port = config.port;
 
 app.use(express.json());
+app.use(cors());
 
 app.use(router);
 

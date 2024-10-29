@@ -1,5 +1,6 @@
 import { Status } from "../models/job";
 import { config } from "../config";
+import { webhookService } from "./webhookService";
 
 class JobStatusService {
   private status: Status = Status.Pending;
@@ -13,8 +14,10 @@ class JobStatusService {
     It randomly sets the status to either completed or error with a delay.
   */
   private runJob(): void {
-    setTimeout(() => {
+    setTimeout(async () => {
       this.status = Math.random() < 0.8 ? Status.Completed : Status.Error;
+      // Notify webhooks of status change
+      await webhookService.notifyWebhooks(this.status);
     }, config.statusDelay);
   }
 
