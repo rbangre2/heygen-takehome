@@ -81,6 +81,23 @@ const client = new StatusClient('http://localhost:3000', {
 });
 ```
 
+### Adaptive Polling Strategy
+
+The StatusClient implements an intelligent adaptive polling strategy that's more efficient than traditional fixed-interval polling:
+
+#### How it works:
+- Starts with a base polling interval (default: 2 seconds)
+- Doubles the interval after each "pending" response
+- Caps at a maximum interval (default: 30 seconds)
+- Resets to base interval when status changes
+
+#### Benefits:
+- Reduces server load by decreasing polling frequency over time
+- Minimizes latency for status changes by starting with short intervals
+- Prevents excessive requests during long-running jobs
+- Automatically adjusts to job duration patterns
+
+
 ### Methods
 
 - `startMonitoring()`: Starts polling and registers webhook if configured
