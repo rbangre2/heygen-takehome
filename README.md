@@ -142,6 +142,30 @@ const client = new StatusClient('http://localhost:3000', {
 await client.startMonitoring();
 ```
 
+The `examples` directory contains complete working examples:
+
+- `basic-polling.ts`: Shows how to use the client with polling only
+- `webhook-monitoring.ts`: Demonstrates webhook integration with fallback polling
+
+To run the examples:
+
+1. Start the server
+```
+cd packages/server
+npm run start
+```
+
+2. Run the polling example 
+```
+cd packages/client
+npm run example:polling
+```
+
+3. Run the webhook example
+```
+cd packages/client
+npm run example:webhook
+```
 
 ## Running Tests
 
