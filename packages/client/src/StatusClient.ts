@@ -23,6 +23,9 @@ export class StatusClient {
     this.webhookUrl = config.webhookUrl;
   }
 
+  /*
+    Registers a webhook with the server
+  */
   public async registerWebhook(): Promise<void> {
     if (!this.webhookUrl) {
       throw new Error("webhook URL not configured");
@@ -33,6 +36,9 @@ export class StatusClient {
     });
   }
 
+  /*
+    Unregisters a webhook with the server
+  */
   public async unregisterWebhook(): Promise<void> {
     if (!this.webhookUrl) {
       throw new Error("webhook URL not configured");
