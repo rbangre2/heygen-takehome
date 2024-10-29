@@ -53,8 +53,8 @@ Create a `.env` file in the server folder to specify configuration options.
 
 ### Example `.env` file:
 ```plaintext
-PORT=3000
-STATUS_DELAY=5000
+PORT=8080
+STATUS_DELAY=15000
 
 ## PORT
 Specifies the port on which the server listens.
