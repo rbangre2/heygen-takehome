@@ -9,10 +9,10 @@ app.use(express.json());
 
 app.use(router);
 
-/*
-app.listen(port, () => {
-  console.log(`server is running on http://localhost:${port}`);
-});
-*/
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}
 
 export default app;
