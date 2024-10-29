@@ -86,8 +86,8 @@ const client = new StatusClient('http://localhost:3000', {
 - `startMonitoring()`: Starts polling and registers webhook if configured
 - `stopMonitoring()`: Stops polling and unregisters webhook if configured
 - `getStatus()`: Makes a single request to get current status
-- `registerWebhook()`: Manually register a webhook URL with the server
-- `unregisterWebhook()`: Manually unregister a webhook URL from the server
+- `registerWebhook()`: Register a webhook URL with the server
+- `unregisterWebhook()`: Unregister a webhook URL from the server
 
 ### Webhook Support
 
