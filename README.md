@@ -1,6 +1,6 @@
 # Status Client Library and Server
 
-This project includes a server and client library for polling the status of a simulated video translation job. The server provides a `/status` endpoint, which can return `pending`, `completed`, or `error` based on a configurable delay. The client library, `StatusClient`, allows efficient polling of the server’s status with features like adaptive polling intervals and retry limits.
+This project includes a server and client library for polling the status of a simulated video translation job. The server provides a `/status` endpoint, which can return `pending`, `completed`, or `error` based on a configurable delay. The client library, `StatusClient`, allows efficient polling of the server's status with features like adaptive polling intervals, retry limits, and webhook notifications.
 
 ## Table of Contents
 
@@ -73,22 +73,58 @@ To use the client, import and instantiate StatusClient with the server URL and c
 import { StatusClient } from './src/StatusClient';
 
 const client = new StatusClient('http://localhost:3000', {
-  pollingInterval: 2000,  // Start with a 2-second interval
-  maxInterval: 30000,     // Cap interval at 30 seconds
-  maxRetries: 10,         // Maximum retry attempts
+  pollingInterval: 2000,    // Start with a 2-second interval
+  maxInterval: 30000,       // Cap interval at 30 seconds
+  maxRetries: 10,           // Maximum retry attempts
+  webhookUrl: 'https://your-service.com/webhook',  // Optional webhook URL
   onUpdate: (status) => console.log('Status update:', status),
 });
 ```
 
-## Methods
+### Methods
 
-- `startPolling()`: Starts polling the server at the configured interval.
-- `stopPolling()`: Stops the polling process.
-- `getStatus()`: Makes a single request to the server's /status endpoint and returns the current status.
+- `startMonitoring()`: Starts polling and registers webhook if configured
+- `stopMonitoring()`: Stops polling and unregisters webhook if configured
+- `getStatus()`: Makes a single request to get current status
+- `registerWebhook()`: Manually register a webhook URL with the server
+- `unregisterWebhook()`: Manually unregister a webhook URL from the server
 
-## Example Usage
+### Webhook Support
 
-Here's an example of using StatusClient to poll for job status updates
+The StatusClient supports webhook notifications in addition to polling. When configured with a webhook URL, the client will:
+- Automatically register the webhook URL when monitoring starts
+- Receive push notifications when the job status changes
+- Continue polling as a fallback mechanism
+- Automatically unregister the webhook when monitoring stops
+
+Example with webhook configuration:
+
+```typescript
+const client = new StatusClient('http://localhost:3000', {
+  webhookUrl: 'https://your-service.com/webhook',
+  onUpdate: (status) => {
+    console.log('Status update received:', status);
+    if (status !== 'pending') {
+      client.stopMonitoring();
+    }
+  },
+});
+
+await client.startMonitoring();
+```
+
+The webhook endpoint should expect POST requests with the following payload:
+
+```typescript
+interface WebhookPayload {
+  result: 'pending' | 'completed' | 'error';
+  timestamp: number;
+}
+```
+
+### Example Usage
+
+Here's an example of using StatusClient to poll for job status updates:
 
 ```typescript
 const client = new StatusClient('http://localhost:3000', {
@@ -96,13 +132,16 @@ const client = new StatusClient('http://localhost:3000', {
   maxInterval: 30000,      // Maximum interval of 30 seconds
   maxRetries: 5,           // Retry up to 5 times
   onUpdate: (status) => {
-    console.log('Received status update:', status);
-    if (status !== 'pending') client.stopPolling(); // Stop on final status
+    console.log('Status update received:', status);
+    if (status !== 'pending') {
+      client.stopMonitoring();
+    }
   },
 });
 
-client.startPolling();
+await client.startMonitoring();
 ```
+
 
 ## Running Tests
 

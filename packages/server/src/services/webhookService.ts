@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Status } from "../models/job";
-import { WebhookRegistration, WebhookPayload } from "../models/webhook";
+import { WebhookPayload } from "../models/webhook";
 
 class WebhookService {
   private webhooks: Set<string> = new Set();
@@ -12,7 +12,7 @@ class WebhookService {
    */
   public registerWebhook(url: string): void {
     if (!this.isValidUrl(url)) {
-      throw new Error("Invalid webhook URL");
+      throw new Error("invalid webhook URL");
     }
     this.webhooks.add(url);
   }
@@ -68,7 +68,7 @@ class WebhookService {
     try {
       await axios.post(url, payload);
     } catch (error) {
-      console.error(`Failed to notify webhook ${url}:`, error);
+      console.error(`failed to notify webhook ${url}:`, error);
     }
   }
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { ClientConfig, Status, StatusResponse } from "./types";
+import { WebhookConfig, Status, StatusResponse } from "./types";
 import { defaultConfig } from "./config";
 import { calculateBackoff } from "./utils/backoff";
 
@@ -11,14 +11,52 @@ export class StatusClient {
   private retries: number = 0;
   private onUpdate?: (status: Status) => void;
   private pollingTimer: NodeJS.Timeout | null = null;
+  private webhookUrl?: string;
 
-  constructor(baseURL: string, config: ClientConfig = {}) {
+  constructor(baseURL: string, config: WebhookConfig = {}) {
     this.axiosInstance = axios.create({ baseURL });
     this.pollingInterval =
       config.pollingInterval || defaultConfig.pollingInterval;
     this.maxInterval = config.maxInterval || defaultConfig.maxInterval;
     this.maxRetries = config.maxRetries || defaultConfig.maxRetries;
     this.onUpdate = config.onUpdate;
+    this.webhookUrl = config.webhookUrl;
+  }
+
+  public async registerWebhook(): Promise<void> {
+    if (!this.webhookUrl) {
+      throw new Error("webhook URL not configured");
+    }
+
+    await this.axiosInstance.post("/webhooks/register", {
+      url: this.webhookUrl,
+    });
+  }
+
+  public async unregisterWebhook(): Promise<void> {
+    if (!this.webhookUrl) {
+      throw new Error("webhook URL not configured");
+    }
+
+    await this.axiosInstance.delete("/webhooks/unregister", {
+      data: { url: this.webhookUrl },
+    });
+  }
+
+  public async startMonitoring(): Promise<void> {
+    this.startPolling();
+
+    if (this.webhookUrl) {
+      await this.registerWebhook();
+    }
+  }
+
+  public async stopMonitoring(): Promise<void> {
+    this.stopPolling();
+
+    if (this.webhookUrl) {
+      await this.unregisterWebhook();
+    }
   }
 
   /*

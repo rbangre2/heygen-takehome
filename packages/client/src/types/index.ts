@@ -18,3 +18,7 @@ export interface ClientConfig {
 export interface StatusResponse {
   result: Status;
 }
+
+export interface WebhookConfig extends ClientConfig {
+  webhookUrl?: string;
+}
